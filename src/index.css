@@ -1,0 +1,170 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Cerenova Design System */
+    --background: 150 20% 98%;
+    --foreground: 195 25% 20%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 195 25% 20%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 195 25% 20%;
+
+    /* Primary: Deep Slate Teal #567E89 */
+    --primary: 193 23% 44%;
+    --primary-foreground: 0 0% 100%;
+
+    /* Secondary: Sage Green #8EB1A5 */
+    --secondary: 155 22% 63%;
+    --secondary-foreground: 195 25% 20%;
+
+    --muted: 150 15% 94%;
+    --muted-foreground: 195 15% 45%;
+
+    /* Accent: Lighter sage for subtle highlights */
+    --accent: 155 25% 90%;
+    --accent-foreground: 193 23% 44%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 155 18% 88%;
+    --input: 155 18% 88%;
+    --ring: 193 23% 44%;
+
+    --radius: 1rem;
+
+    /* Custom Cerenova tokens */
+    --teal: 193 23% 44%;
+    --teal-light: 193 23% 54%;
+    --teal-dark: 193 23% 34%;
+    --sage: 155 22% 63%;
+    --sage-light: 155 25% 90%;
+    --sage-dark: 155 22% 53%;
+    --cream: 150 20% 98%;
+
+    /* Gradients */
+    --gradient-hero: linear-gradient(135deg, hsl(150 20% 98%) 0%, hsl(155 25% 95%) 100%);
+    --gradient-card: linear-gradient(180deg, hsl(0 0% 100%) 0%, hsl(155 25% 98%) 100%);
+    --gradient-cta: linear-gradient(135deg, hsl(193 23% 44%) 0%, hsl(193 23% 38%) 100%);
+
+    /* Shadows */
+    --shadow-sm: 0 2px 8px -2px hsl(193 23% 44% / 0.08);
+    --shadow-md: 0 8px 24px -8px hsl(193 23% 44% / 0.12);
+    --shadow-lg: 0 16px 48px -16px hsl(193 23% 44% / 0.16);
+    --shadow-glow: 0 0 40px hsl(155 22% 63% / 0.3);
+
+    /* Transitions */
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-bounce: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 240 5.9% 10%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+
+  .dark {
+    --background: 195 30% 10%;
+    --foreground: 150 20% 95%;
+
+    --card: 195 25% 15%;
+    --card-foreground: 150 20% 95%;
+
+    --popover: 195 25% 15%;
+    --popover-foreground: 150 20% 95%;
+
+    --primary: 155 22% 63%;
+    --primary-foreground: 195 30% 10%;
+
+    --secondary: 193 23% 35%;
+    --secondary-foreground: 150 20% 95%;
+
+    --muted: 195 20% 20%;
+    --muted-foreground: 150 15% 65%;
+
+    --accent: 193 20% 25%;
+    --accent-foreground: 155 22% 70%;
+
+    --destructive: 0 62% 30%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 195 20% 20%;
+    --input: 195 20% 20%;
+    --ring: 155 22% 63%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-semibold tracking-tight;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .animate-fade-in {
+    animation: fadeIn 0.6s ease-out forwards;
+  }
+
+  .animate-slide-up {
+    animation: slideUp 0.6s ease-out forwards;
+  }
+
+  .animate-float {
+    animation: float 6s ease-in-out infinite;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
