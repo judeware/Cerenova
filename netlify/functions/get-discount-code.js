@@ -51,7 +51,7 @@ exports.handler = async (event, context) => {
             algorithm: 'RS256',
             header: {
               alg: 'RS256',
-              kid: 'netlify-key-2',
+              kid: 'netlify-key-3',
               typ: 'JWT'
             }
           });
