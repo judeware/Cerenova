@@ -1,10 +1,10 @@
-const Busboy = require('busboy');
+const busboy = require('busboy');
 const fetch = require('node-fetch');
 
 // Helper function to parse multipart form data
 function parseMultipartForm(event) {
   return new Promise((resolve, reject) => {
-    const busboy = new Busboy({
+    const bb = busboy({
       headers: event.headers,
       limits: {
         fileSize: 10 * 1024 * 1024 // 10MB limit
@@ -14,7 +14,7 @@ function parseMultipartForm(event) {
     const fields = {};
     const files = {};
     
-    busboy.on('file', (fieldname, file, filename, encoding, mimetype) => {
+    bb.on('file', (fieldname, file, filename, encoding, mimetype) => {
       const chunks = [];
       
       file.on('data', (data) => {
@@ -34,18 +34,18 @@ function parseMultipartForm(event) {
       });
     });
     
-    busboy.on('field', (fieldname, val) => {
+    bb.on('field', (fieldname, val) => {
       fields[fieldname] = val;
     });
     
-    busboy.on('finish', () => {
+    bb.on('finish', () => {
       resolve({ fields, files });
     });
     
-    busboy.on('error', reject);
+    bb.on('error', reject);
     
-    busboy.write(Buffer.from(event.body, 'base64'));
-    busboy.end();
+    bb.write(Buffer.from(event.body, 'base64'));
+    bb.end();
   });
 }
 
