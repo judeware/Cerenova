@@ -1,0 +1,16 @@
+{
+  "keys": [
+    {
+      "alg": "RS256",
+      "e": "AQAB",
+      "ext": true,
+      "key_ops": [
+        "verify"
+      ],
+      "kty": "RSA",
+      "n": "tHRnK973Gq8OQmw6H-aJFyAPQndJgJxQuWeJBLENMDtwVfqv7yUUUxAz_W38X3jjHlXawPm3vvdsyA4Lt5FLRPAww2_jCyW3TWSn6OLp_hP2-SWryvSqbQSZ70_FZ6vCjIrehbuioLQY3uF7ngmTKWbEOLCZSOzQqshi1lP7Il4UPF9VzWICXW16A2KorT0ec0DqHmNEWWyTMoibhFR9vCWDjQgWA-FSFrAmQM93kn5AhicwX-kI6_ZSbJNG4ud-271n_fkLOoL0xeJoNAyicg3HboqYhZv_W5F5MSfWnriA64lDwSL3JrSI16Bfka5s2S22HZscG3apI_DCU-8U0w",
+      "kid": "netlify-key-3",
+      "use": "sig"
+    }
+  ]
+}

@@ -25,10 +25,13 @@ dist-ssr
 
 # Security - Private keys and sensitive files
 *.pem
+*.key
+*.pub
 *_safe.txt
+private_*
+key.json
 .env
 .env.local
 .env.production
 .env.development
-key.json
-*~
+sdsd.txt
