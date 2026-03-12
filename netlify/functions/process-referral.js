@@ -52,66 +52,46 @@ function parseMultipartForm(event) {
 // Helper function to upload file to HubSpot
 async function uploadToHubSpot(file, accessToken) {
   try {
-    // Step 1: Request file upload URL from HubSpot
-    const uploadUrlResponse = await fetch(
-      `https://api.hubapi.com/files/v3/files/upload-urls`,
+    // Create FormData for multipart upload
+    const FormData = require('form-data');
+    const form = new FormData();
+    
+    // Add the file
+    form.append('file', file.buffer, {
+      filename: file.filename,
+      contentType: file.mimetype
+    });
+    
+    // Add file options
+    form.append('options', JSON.stringify({
+      access: 'PUBLIC_INDEXABLE',
+      ttl: 'P6M', // 6 months
+      overwrite: false
+    }));
+    
+    // Set folder path
+    form.append('folderPath', '/GP Referrals');
+    
+    // Upload file to HubSpot
+    const uploadResponse = await fetch(
+      'https://api.hubapi.com/files/v3/files',
       {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${accessToken}`,
-          'Content-Type': 'application/json'
+          ...form.getHeaders()
         },
-        body: JSON.stringify({
-          size: file.buffer.length,
-          name: file.filename,
-          options: {
-            access: 'PUBLIC_NOT_INDEXABLE',
-            type: 'OTHER'
-          }
-        })
+        body: form
       }
     );
-
-    if (!uploadUrlResponse.ok) {
-      throw new Error(`Failed to get upload URL: ${await uploadUrlResponse.text()}`);
-    }
-
-    const uploadData = await uploadUrlResponse.json();
-
-    // Step 2: Upload file to the provided URL
-    const uploadResponse = await fetch(uploadData.uploadUrl, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': file.mimetype || 'application/octet-stream'
-      },
-      body: file.buffer
-    });
 
     if (!uploadResponse.ok) {
-      throw new Error(`Failed to upload file: ${await uploadResponse.text()}`);
+      const errorText = await uploadResponse.text();
+      throw new Error(`Failed to upload file to HubSpot: ${errorText}`);
     }
 
-    // Step 3: Register the uploaded file with HubSpot
-    const registerResponse = await fetch(
-      `https://api.hubapi.com/files/v3/files/upload/finish`,
-      {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${accessToken}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          uploadId: uploadData.uploadId
-        })
-      }
-    );
-
-    if (!registerResponse.ok) {
-      throw new Error(`Failed to register file: ${await registerResponse.text()}`);
-    }
-
-    const fileData = await registerResponse.json();
-    return fileData.objects[0].url; // Return the public URL
+    const fileData = await uploadResponse.json();
+    return fileData.url; // Return the public URL
   } catch (error) {
     console.error('Error uploading file to HubSpot:', error);
     throw error;

@@ -71,9 +71,8 @@ HUBSPOT_ACCESS_TOKEN=your-hubspot-private-app-access-token
 
 #### HubSpot API Endpoints Used
 1. **File Upload**: 
-   - `POST /files/v3/files/upload-urls` - Get upload URL
-   - `PUT {uploadUrl}` - Upload file content
-   - `POST /files/v3/files/upload/finish` - Register uploaded file
+   - `POST /files/v3/files` - Upload file with multipart/form-data
+   - Options: `access: 'PUBLIC_INDEXABLE'`, `ttl: 'P6M'`, `folderPath: '/GP Referrals'`
 
 2. **Contact Management**:
    - `POST /crm/v3/objects/contacts/search` - Search existing contacts
