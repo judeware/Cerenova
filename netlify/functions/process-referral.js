@@ -14,8 +14,10 @@ function parseMultipartForm(event) {
     const fields = {};
     const files = {};
     
-    bb.on('file', (fieldname, file, filename, encoding, mimetype) => {
+    bb.on('file', (fieldname, file, info) => {
       const chunks = [];
+      const filename = info.filename;
+      const mimetype = info.mimeType;
       
       file.on('data', (data) => {
         chunks.push(data);
@@ -23,8 +25,8 @@ function parseMultipartForm(event) {
       
       file.on('end', () => {
         files[fieldname] = {
-          filename,
-          mimetype,
+          filename: filename || 'document',
+          mimetype: mimetype || 'application/octet-stream',
           buffer: Buffer.concat(chunks)
         };
       });
@@ -56,10 +58,10 @@ async function uploadToHubSpot(file, accessToken) {
     const FormData = require('form-data');
     const form = new FormData();
     
-    // Add the file
+    // Add the file - explicitly provide filename to avoid path error
     form.append('file', file.buffer, {
-      filename: file.filename,
-      contentType: file.mimetype
+      filename: file.filename || 'referral-document.pdf',
+      contentType: file.mimetype || 'application/pdf'
     });
     
     // Add file options
