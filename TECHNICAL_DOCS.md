@@ -46,8 +46,8 @@ The GP Referral System allows general practitioners to refer patients to Cerenov
 | Property | Value | Description |
 |----------|-------|-------------|
 | dealname | `GP Referral - {patientName}` | Deal title |
-| pipeline | GP Referrals | Pipeline name (must exist in HubSpot) |
-| dealstage | Referral Received | Initial stage (first stage in pipeline) |
+| pipeline | 1620199873 | GP Referrals pipeline ID (hardcoded) |
+| dealstage | 2698204656 | Referral Received stage ID (hardcoded) |
 | amount | 220 | Initial session value |
 | gp_name | {gpName} | Custom property for referring GP |
 | gp_email | {gpEmail} | Custom property for GP email |

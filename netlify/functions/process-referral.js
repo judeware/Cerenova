@@ -221,31 +221,11 @@ exports.handler = async (event) => {
       contactId = contactData.id;
     }
 
-    // Step 2: Get the GP Referrals pipeline
-    const pipelinesResponse = await fetch(
-      `https://api.hubapi.com/crm/v3/pipelines/deals`,
-      {
-        headers: {
-          'Authorization': `Bearer ${accessToken}`
-        }
-      }
-    );
-
-    const pipelines = await pipelinesResponse.json();
-    const gpReferralsPipeline = pipelines.results.find(p => p.label === 'GP Referrals');
-
-    if (!gpReferralsPipeline) {
-      throw new Error('GP Referrals pipeline not found in HubSpot');
-    }
-
-    // Get the first stage (should be "Referral Received")
-    const referralReceivedStage = gpReferralsPipeline.stages[0];
-
-    // Step 3: Create deal in GP Referrals pipeline
+    // Step 2: Create deal in GP Referrals pipeline with specific IDs
     const dealProperties = {
       dealname: `GP Referral - ${fields.patientName}`,
-      pipeline: gpReferralsPipeline.id,
-      dealstage: referralReceivedStage.id,
+      pipeline: '1620199873',  // GP Referrals pipeline ID
+      dealstage: '2698204656', // Referral Received stage ID
       amount: 220, // Initial session value
       gp_name: fields.gpName,
       gp_email: fields.gpEmail,
