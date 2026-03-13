@@ -168,14 +168,16 @@ const IntroOffer = () => {
             {step === 1 && (
               <div className="text-center space-y-8 animate-fade-in">
                 <div className="space-y-6">
+                  <p className="text-sage-dark font-medium tracking-wide uppercase text-sm">
+                    Australian Online Psychology
+                  </p>
                   <h1 className="text-4xl md:text-5xl font-bold text-foreground leading-tight">
-                    Welcome to the brand new{" "}
-                    <span className="text-primary">Cerenova</span>.
+                    Mental wellbeing,{" "}
+                    <span className="text-primary">professional care.</span>
                   </h1>
                   <p className="text-xl md:text-2xl text-muted-foreground max-w-xl mx-auto">
-                    Are you ready to start your mental health journey — valued at{" "}
-                    <span className="font-semibold text-foreground">$220</span> —{" "}
-                    <span className="font-semibold text-primary">100% rebated</span>?
+                    Connect with experienced, registered psychologists from the comfort of your home. 
+                    Evidence-based therapy tailored to your unique needs, available Australia-wide.
                   </p>
                 </div>
 
