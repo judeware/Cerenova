@@ -8,6 +8,7 @@ import { initGA, trackPageView } from "@/lib/analytics";
 import Index from "./pages/Index";
 import Practitioners from "./pages/Practitioners";
 import IntroOffer from "./pages/IntroOffer";
+import Privacy from "./pages/Privacy";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -39,6 +40,7 @@ const App = () => (
           <Route path="/" element={<Index />} />
           <Route path="/practitioners" element={<Practitioners />} />
           <Route path="/intro-offer" element={<IntroOffer />} />
+          <Route path="/privacy" element={<Privacy />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

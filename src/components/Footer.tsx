@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import logoIcon from "@/assets/logo-icon.png";
 
 const Footer = () => {
@@ -102,9 +103,17 @@ const Footer = () => {
         {/* Bottom Bar */}
         <div className="border-t border-primary-foreground/20 mt-12 pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-            <p className="text-sm text-primary-foreground/70">
-              © {currentYear} Cerenova Psychology. All rights reserved.
-            </p>
+            <div className="flex items-center gap-4">
+              <p className="text-sm text-primary-foreground/70">
+                © {currentYear} Cerenova Psychology. All rights reserved.
+              </p>
+              <Link 
+                to="/privacy" 
+                className="text-sm text-primary-foreground/70 hover:text-primary-foreground transition-colors"
+              >
+                Privacy Policy
+              </Link>
+            </div>
             <p className="text-sm text-primary-foreground/70">
               Made with care in Australia 🇦🇺
             </p>
