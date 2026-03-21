@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
-import ReactGA from "react-ga4";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
@@ -30,11 +29,7 @@ const IntroOffer = () => {
 
   // Track page view and step changes
   useEffect(() => {
-    ReactGA.event({
-      category: "Funnel",
-      action: "View Step",
-      label: `Step ${step}`,
-    });
+    // GTM will handle tracking via dataLayer events
   }, [step]);
 
   // Fetch discount code when reaching step 3
@@ -66,11 +61,7 @@ const IntroOffer = () => {
 
   const handleStartClick = () => {
     setStep(2);
-    ReactGA.event({
-      category: "Funnel",
-      action: "Click",
-      label: "Get Started Button",
-    });
+    // GTM will handle tracking via dataLayer events
   };
 
   const handleSubmitForm = async () => {
@@ -93,11 +84,7 @@ const IntroOffer = () => {
 
       if (response.ok) {
         setStep(3);
-        ReactGA.event({
-          category: "Funnel",
-          action: "Submit",
-          label: "Lead Form",
-        });
+        // GTM will handle tracking via dataLayer events
       } else {
         throw new Error("Failed to save lead");
       }
@@ -114,11 +101,7 @@ const IntroOffer = () => {
   };
 
   const handleBookNow = () => {
-    ReactGA.event({
-      category: "Funnel",
-      action: "Click",
-      label: "Book Now Button - To Practitioners",
-    });
+    // GTM will handle tracking via dataLayer events
     // Navigate to practitioners page with discount code
     navigate("/practitioners", { 
       state: { 
