@@ -235,6 +235,24 @@ exports.handler = async (event) => {
       description: `Referral from Dr. ${fields.gpName} for ${fields.patientName}`
     };
 
+    // Create deal with associations included in the payload
+    const createDealPayload = {
+      properties: dealProperties,
+      associations: [
+        {
+          to: {
+            id: contactId
+          },
+          types: [
+            {
+              associationCategory: 'HUBSPOT_DEFINED',
+              associationTypeId: 3 // Deal-to-Contact association
+            }
+          ]
+        }
+      ]
+    };
+
     const createDealResponse = await fetch(
       `https://api.hubapi.com/crm/v3/objects/deals`,
       {
@@ -243,7 +261,7 @@ exports.handler = async (event) => {
           'Authorization': `Bearer ${accessToken}`,
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ properties: dealProperties })
+        body: JSON.stringify(createDealPayload)
       }
     );
 
@@ -252,17 +270,6 @@ exports.handler = async (event) => {
     }
 
     const dealData = await createDealResponse.json();
-
-    // Step 4: Associate deal with contact
-    await fetch(
-      `https://api.hubapi.com/crm/v3/objects/deals/${dealData.id}/associations/contacts/${contactId}/3`,
-      {
-        method: 'PUT',
-        headers: {
-          'Authorization': `Bearer ${accessToken}`
-        }
-      }
-    );
 
     console.log('GP Referral processed successfully');
 
