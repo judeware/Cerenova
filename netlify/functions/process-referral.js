@@ -93,7 +93,10 @@ async function uploadToHubSpot(file, accessToken) {
     }
 
     const fileData = await uploadResponse.json();
-    return fileData.url; // Return the public URL
+    return {
+      url: fileData.url,
+      id: fileData.id // Return both URL and ID
+    };
   } catch (error) {
     console.error('Error uploading file to HubSpot:', error);
     throw error;
@@ -148,10 +151,10 @@ exports.handler = async (event) => {
 
     // Upload files to HubSpot
     console.log('Uploading referral letter to HubSpot...');
-    const referralLetterUrl = await uploadToHubSpot(files.referralLetter, accessToken);
+    const referralLetterData = await uploadToHubSpot(files.referralLetter, accessToken);
     
     console.log('Uploading MHCP to HubSpot...');
-    const mhcpUrl = await uploadToHubSpot(files.mhcp, accessToken);
+    const mhcpData = await uploadToHubSpot(files.mhcp, accessToken);
 
     // Step 1: Create or update contact (patient)
     const contactProperties = {
@@ -230,8 +233,8 @@ exports.handler = async (event) => {
       gp_name: fields.gpName,
       gp_email: fields.gpEmail,
       patient_dob: formatDateForHubSpot(fields.patientDOB),
-      gp_referral_letter_url: referralLetterUrl,
-      mhcp_url: mhcpUrl,
+      gp_referral_letter_url: referralLetterData.url,
+      mhcp_url: mhcpData.url,
       description: `Referral from Dr. ${fields.gpName} for ${fields.patientName}`
     };
 
@@ -270,6 +273,56 @@ exports.handler = async (event) => {
     }
 
     const dealData = await createDealResponse.json();
+
+    // Step 3: Create a Note engagement with file attachments
+    const notePayload = {
+      properties: {
+        hs_timestamp: new Date().toISOString(),
+        hs_note_body: `GP Referral Documents:\n\nReferral Letter: ${files.referralLetter.filename}\nMHCP: ${files.mhcp.filename}\n\nReferral from Dr. ${fields.gpName} for ${fields.patientName}`,
+        hs_attachment_ids: `${referralLetterData.id};${mhcpData.id}` // Semicolon-separated file IDs
+      },
+      associations: [
+        {
+          to: {
+            id: dealData.id
+          },
+          types: [
+            {
+              associationCategory: 'HUBSPOT_DEFINED',
+              associationTypeId: 214 // Note-to-Deal association
+            }
+          ]
+        },
+        {
+          to: {
+            id: contactId
+          },
+          types: [
+            {
+              associationCategory: 'HUBSPOT_DEFINED',
+              associationTypeId: 202 // Note-to-Contact association
+            }
+          ]
+        }
+      ]
+    };
+
+    const createNoteResponse = await fetch(
+      `https://api.hubapi.com/crm/v3/objects/notes`,
+      {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${accessToken}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(notePayload)
+      }
+    );
+
+    if (!createNoteResponse.ok) {
+      console.error(`Failed to create note: ${await createNoteResponse.text()}`);
+      // Don't fail the whole process if note creation fails
+    }
 
     console.log('GP Referral processed successfully');
 
