@@ -5,8 +5,10 @@ import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
-import { ArrowRight, Check, Loader2 } from "lucide-react";
+import { ArrowRight, Check, Loader2, Clock, Calendar, User } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
+import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 
 const IntroOffer = () => {
   const [searchParams] = useSearchParams();
@@ -17,6 +19,25 @@ const IntroOffer = () => {
   const [discountCode, setDiscountCode] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isLoadingDiscount, setIsLoadingDiscount] = useState(false);
+  const [selectedPsychologist, setSelectedPsychologist] = useState<string | null>(null);
+
+  // Psychologist data
+  const psychologists = [
+    {
+      id: "sean-guy",
+      name: "Sean Guy",
+      title: "Clinical Psychologist",
+      tags: ["Anxiety", "Depression", "Trauma", "Men's Mental Health"],
+      halaxyUrl: "https://www.halaxy.com/book/dr-sean-guy-clinical-psychologist/location/1100067"
+    },
+    {
+      id: "liam-farrelly",
+      name: "Liam Farrelly", 
+      title: "Clinical Psychologist",
+      tags: ["Anxiety", "Depression", "Trauma", "ADHD"],
+      halaxyUrl: "https://www.halaxy.com/book/mr-liam-farrelly-clinical-psychologist/location/1100068"
+    }
+  ];
 
   // Capture UTM parameters
   const utmParams = {
@@ -32,9 +53,9 @@ const IntroOffer = () => {
     // GTM will handle tracking via dataLayer events
   }, [step]);
 
-  // Fetch discount code when reaching step 3
+  // Fetch discount code when reaching step 4
   useEffect(() => {
-    if (step === 3 && !discountCode) {
+    if (step === 4 && !discountCode) {
       fetchDiscountCode();
     }
   }, [step]);
@@ -64,8 +85,27 @@ const IntroOffer = () => {
     // GTM will handle tracking via dataLayer events
   };
 
-  const handleSubmitForm = async () => {
-    if (!email || !isEligible) return;
+  const handleEligibilityCheck = () => {
+    if (!isEligible) {
+      toast({
+        title: "Eligibility Required",
+        description: "Please confirm you have a Mental Health Care Plan to continue.",
+        variant: "destructive",
+      });
+      return;
+    }
+    setStep(3);
+  };
+
+  const handleEmailSubmit = async () => {
+    if (!email) {
+      toast({
+        title: "Email Required",
+        description: "Please enter your email to continue.",
+        variant: "destructive",
+      });
+      return;
+    }
 
     setIsSubmitting(true);
     try {
@@ -83,7 +123,7 @@ const IntroOffer = () => {
       });
 
       if (response.ok) {
-        setStep(3);
+        setStep(4);
         // GTM will handle tracking via dataLayer events
       } else {
         throw new Error("Failed to save lead");
@@ -100,15 +140,16 @@ const IntroOffer = () => {
     }
   };
 
-  const handleBookNow = () => {
-    // GTM will handle tracking via dataLayer events
-    // Navigate to practitioners page with discount code
-    navigate("/practitioners", { 
-      state: { 
-        discountCode: discountCode,
-        fromIntroOffer: true 
-      } 
-    });
+  const handleSelectPsychologist = (psychologistId: string) => {
+    setSelectedPsychologist(psychologistId);
+    setStep(6);
+  };
+
+  const handleFinalBooking = () => {
+    const selected = psychologists.find(p => p.id === selectedPsychologist);
+    if (selected) {
+      window.open(`${selected.halaxyUrl}?discount=${discountCode}`, "_blank");
+    }
   };
 
   return (
@@ -120,24 +161,24 @@ const IntroOffer = () => {
           <div className="max-w-2xl mx-auto">
             {/* Progress Indicator */}
             <div className="mb-12">
-              <div className="flex items-center justify-center gap-3">
-                {[1, 2, 3].map((i) => (
+              <div className="flex items-center justify-center gap-2">
+                {[1, 2, 3, 4, 5, 6].map((i) => (
                   <div
                     key={i}
-                    className={`flex items-center ${i < 3 ? "flex-1" : ""}`}
+                    className={`flex items-center ${i < 6 ? "flex-1" : ""}`}
                   >
                     <div
-                      className={`w-10 h-10 rounded-full flex items-center justify-center font-semibold transition-all ${
+                      className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold transition-all ${
                         i <= step
                           ? "bg-primary text-primary-foreground"
                           : "bg-muted text-muted-foreground"
                       }`}
                     >
-                      {i < step ? <Check className="w-5 h-5" /> : i}
+                      {i < step ? <Check className="w-4 h-4" /> : i}
                     </div>
-                    {i < 3 && (
+                    {i < 6 && (
                       <div
-                        className={`h-1 flex-1 ml-3 transition-all ${
+                        className={`h-0.5 flex-1 ml-1 transition-all ${
                           i < step ? "bg-primary" : "bg-muted"
                         }`}
                       />
@@ -147,20 +188,19 @@ const IntroOffer = () => {
               </div>
             </div>
 
-            {/* Step 1: Hero */}
+            {/* Step 1: Landing Page Hero */}
             {step === 1 && (
               <div className="text-center space-y-8 animate-fade-in">
                 <div className="space-y-6">
-                  <p className="text-sage-dark font-medium tracking-wide uppercase text-sm">
-                    Australian Online Psychology
+                  <p className="text-sage-dark font-medium tracking-widest uppercase text-xs">
+                    AUSTRALIAN ONLINE PSYCHOLOGY
                   </p>
                   <h1 className="text-4xl md:text-5xl font-bold text-foreground leading-tight">
-                    Mental wellbeing,{" "}
-                    <span className="text-primary">professional care.</span>
+                    Feeling like something's not quite right?
                   </h1>
-                  <p className="text-xl md:text-2xl text-muted-foreground max-w-xl mx-auto">
+                  <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
                     Connect with experienced, registered psychologists from the comfort of your home. 
-                    Evidence-based therapy tailored to your unique needs, available Australia-wide.
+                    Check your eligibility for our introductory first-session offer in under a minute.
                   </p>
                 </div>
 
@@ -171,29 +211,26 @@ const IntroOffer = () => {
                     onClick={handleStartClick}
                     className="gap-2 text-lg px-8 py-6"
                   >
-                    Yes – Get Started
+                    Check My Eligibility
                     <ArrowRight className="w-5 h-5" />
                   </Button>
-                </div>
-
-                <div className="pt-8 border-t border-border">
-                  <p className="text-sm text-muted-foreground">
-                    Professional psychology services with Medicare rebates available
+                  <p className="text-sm text-muted-foreground mt-3">
+                    No commitment - just a quick eligibility check
                   </p>
                 </div>
               </div>
             )}
 
-            {/* Step 2: Eligibility & Email */}
+            {/* Step 2: Eligibility Check */}
             {step === 2 && (
               <div className="space-y-8 animate-fade-in">
                 <div className="text-center space-y-4">
+                  <div className="w-12 h-12 bg-sage-light rounded-full flex items-center justify-center mx-auto">
+                    <span className="text-2xl font-bold text-primary">1</span>
+                  </div>
                   <h2 className="text-3xl font-bold text-foreground">
-                    Let's check your eligibility
+                    Let's quickly check your eligibility
                   </h2>
-                  <p className="text-lg text-muted-foreground">
-                    Please confirm you meet the Medicare requirements
-                  </p>
                 </div>
 
                 <div className="bg-card rounded-3xl p-8 shadow-soft-md space-y-6">
@@ -210,105 +247,213 @@ const IntroOffer = () => {
                     >
                       I have a valid Mental Health Care Plan from my GP
                       <span className="block text-sm text-muted-foreground mt-1">
-                        This is required for Medicare rebates on psychology sessions
+                        This allows Medicare rebates for psychology sessions
                       </span>
                     </label>
                   </div>
 
-                  {isEligible && (
-                    <div className="space-y-4 animate-slide-up">
-                      <div>
-                        <label
-                          htmlFor="email"
-                          className="block text-sm font-medium text-foreground mb-2"
-                        >
-                          Email Address
-                        </label>
-                        <Input
-                          id="email"
-                          type="email"
-                          value={email}
-                          onChange={(e) => setEmail(e.target.value)}
-                          placeholder="your.email@example.com"
-                          className="w-full"
-                          required
-                        />
-                      </div>
-
-                      <Button
-                        variant="cta"
-                        size="lg"
-                        onClick={handleSubmitForm}
-                        disabled={!email || isSubmitting}
-                        className="w-full"
-                      >
-                        {isSubmitting ? (
-                          <>
-                            <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                            Processing...
-                          </>
-                        ) : (
-                          "Continue"
-                        )}
-                      </Button>
-                    </div>
-                  )}
+                  <Button
+                    variant="cta"
+                    size="lg"
+                    onClick={handleEligibilityCheck}
+                    className="w-full"
+                  >
+                    Continue
+                  </Button>
                 </div>
               </div>
             )}
 
-            {/* Step 3: Confirmation & Discount */}
+            {/* Step 3: Email Capture */}
             {step === 3 && (
               <div className="space-y-8 animate-fade-in">
                 <div className="text-center space-y-4">
-                  <div className="w-16 h-16 bg-sage-light rounded-full flex items-center justify-center mx-auto">
-                    <Check className="w-8 h-8 text-primary" />
-                  </div>
                   <h2 className="text-3xl font-bold text-foreground">
-                    You're eligible for our introductory offer!
+                    Where should we send your offer details?
                   </h2>
-                  <p className="text-lg text-muted-foreground">
-                    Here's your exclusive offer
-                  </p>
                 </div>
 
                 <div className="bg-card rounded-3xl p-8 shadow-soft-md space-y-6">
-                  <div className="border-l-4 border-primary pl-4">
-                    <p className="text-2xl font-bold text-foreground mb-1">
-                      $220
-                    </p>
-                    <p className="text-lg text-muted-foreground">
-                      100% Medicare rebate
-                    </p>
+                  <div>
+                    <label
+                      htmlFor="email"
+                      className="block text-sm font-medium text-foreground mb-2"
+                    >
+                      Email address
+                    </label>
+                    <Input
+                      id="email"
+                      type="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      placeholder="your.email@example.com"
+                      className="w-full"
+                      required
+                    />
                   </div>
 
+                  <Button
+                    variant="cta"
+                    size="lg"
+                    onClick={handleEmailSubmit}
+                    disabled={!email || isSubmitting}
+                    className="w-full gap-2"
+                  >
+                    {isSubmitting ? (
+                      <>
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                        Processing...
+                      </>
+                    ) : (
+                      <>
+                        Show My Offer
+                        <ArrowRight className="w-4 h-4" />
+                      </>
+                    )}
+                  </Button>
+                </div>
+              </div>
+            )}
+
+            {/* Step 4: The Offer Page */}
+            {step === 4 && (
+              <div className="space-y-8 animate-fade-in">
+                <div className="text-center space-y-4">
+                  <h2 className="text-3xl font-bold text-foreground">
+                    You're eligible for our introductory offer
+                  </h2>
+                  <div className="space-y-2">
+                    <p className="text-4xl font-bold text-primary">
+                      Your first session is fully covered after rebate
+                    </p>
+                    <p className="text-lg text-muted-foreground">
+                      Secure your appointment with a $98.95 upfront payment. After your session, the full amount is rebated.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="bg-card rounded-3xl p-8 shadow-soft-md space-y-6">
                   {isLoadingDiscount ? (
                     <div className="text-center py-4">
                       <Loader2 className="w-6 h-6 animate-spin mx-auto text-primary" />
                     </div>
                   ) : discountCode ? (
-                    <div className="bg-sage-light/50 rounded-2xl p-4 text-center">
-                      <p className="text-sm text-sage-dark mb-1">Your discount code:</p>
-                      <p className="text-2xl font-bold text-primary">{discountCode}</p>
-                      <p className="text-xs text-muted-foreground mt-1">
-                        Enter this code manually at checkout for your discount
-                      </p>
+                    <div className="bg-primary/10 border-2 border-primary rounded-2xl p-6 text-center">
+                      <p className="text-sm text-foreground mb-2">Your code:</p>
+                      <p className="text-3xl font-bold text-primary">{discountCode}</p>
                     </div>
                   ) : null}
 
-                  <div className="pt-4">
-                    <Button
-                      variant="cta"
-                      size="lg"
-                      onClick={handleBookNow}
-                      className="w-full text-lg py-6"
+                  <Button
+                    variant="cta"
+                    size="lg"
+                    onClick={() => setStep(5)}
+                    className="w-full gap-2"
+                  >
+                    View Available Psychologists and Times
+                    <ArrowRight className="w-4 h-4" />
+                  </Button>
+                </div>
+              </div>
+            )}
+
+            {/* Step 5: Psychologist Selection */}
+            {step === 5 && (
+              <div className="space-y-8 animate-fade-in">
+                <div className="text-center space-y-4">
+                  <h2 className="text-3xl font-bold text-foreground">
+                    Choose the psychologist who feels like the best fit
+                  </h2>
+                </div>
+
+                <div className="space-y-4">
+                  {psychologists.map((psychologist) => (
+                    <Card 
+                      key={psychologist.id}
+                      className="p-6 hover:shadow-soft-lg transition-all cursor-pointer"
+                      onClick={() => handleSelectPsychologist(psychologist.id)}
                     >
-                      Choose Your Psychologist
-                    </Button>
+                      <CardContent className="p-0 space-y-4">
+                        <div className="flex items-start justify-between">
+                          <div className="space-y-2">
+                            <div className="flex items-center gap-3">
+                              <div className="w-12 h-12 bg-sage-light rounded-full flex items-center justify-center">
+                                <User className="w-6 h-6 text-sage-dark" />
+                              </div>
+                              <div>
+                                <h3 className="text-lg font-semibold text-foreground">
+                                  {psychologist.name}
+                                </h3>
+                                <p className="text-sm text-muted-foreground">
+                                  {psychologist.title}
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        
+                        <div className="flex flex-wrap gap-2">
+                          {psychologist.tags.map((tag) => (
+                            <Badge key={tag} variant="secondary" className="text-xs">
+                              {tag}
+                            </Badge>
+                          ))}
+                        </div>
+
+                        <Button variant="cta" className="w-full gap-2">
+                          View Times
+                          <ArrowRight className="w-4 h-4" />
+                        </Button>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Step 6: Bridge to Booking */}
+            {step === 6 && (
+              <div className="space-y-8 animate-fade-in">
+                <div className="text-center space-y-4">
+                  <h2 className="text-3xl font-bold text-foreground">
+                    Almost there - next you'll choose a time
+                  </h2>
+                  <p className="text-lg text-muted-foreground">
+                    You'll be redirected to our secure booking platform
+                  </p>
+                </div>
+
+                <div className="bg-card rounded-3xl p-8 shadow-soft-md space-y-6">
+                  <div className="space-y-4">
+                    <h3 className="font-semibold text-foreground">On the next page, you'll:</h3>
+                    <ul className="space-y-3 text-muted-foreground">
+                      <li className="flex gap-3">
+                        <span className="text-primary font-bold">1.</span>
+                        View available appointments for your chosen psychologist
+                      </li>
+                      <li className="flex gap-3">
+                        <span className="text-primary font-bold">2.</span>
+                        Enter your details to secure your booking
+                      </li>
+                      <li className="flex gap-3">
+                        <span className="text-primary font-bold">3.</span>
+                        Apply your discount code: <span className="font-mono font-bold text-primary">{discountCode}</span>
+                      </li>
+                    </ul>
                   </div>
 
+                  <Button
+                    variant="cta"
+                    size="lg"
+                    onClick={handleFinalBooking}
+                    className="w-full gap-2"
+                  >
+                    Continue to Secure Booking
+                    <ArrowRight className="w-4 h-4" />
+                  </Button>
+
                   <p className="text-xs text-center text-muted-foreground">
-                    You'll be redirected to our secure booking platform
+                    You'll be redirected to Halaxy, our secure booking platform
                   </p>
                 </div>
               </div>
