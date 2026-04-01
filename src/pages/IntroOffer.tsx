@@ -5,7 +5,7 @@ import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
-import { ArrowRight, Check, Loader2, Clock, Calendar, User } from "lucide-react";
+import { ArrowRight, Check, Loader2, Clock, Calendar, User, ArrowLeft } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -24,18 +24,11 @@ const IntroOffer = () => {
   // Psychologist data
   const psychologists = [
     {
-      id: "sean-guy",
-      name: "Sean Guy",
-      title: "Clinical Psychologist",
-      tags: ["Anxiety", "Depression", "Trauma", "Men's Mental Health"],
-      halaxyUrl: "https://www.halaxy.com/book/dr-sean-guy-clinical-psychologist/location/1100067"
-    },
-    {
       id: "liam-farrelly",
       name: "Liam Farrelly", 
-      title: "Clinical Psychologist",
+      title: "Psychologist",
       tags: ["Anxiety", "Depression", "Trauma", "ADHD"],
-      halaxyUrl: "https://www.halaxy.com/book/mr-liam-farrelly-clinical-psychologist/location/1100068"
+      halaxyUrl: "https://www.halaxy.com/book/appointment/psychologist/liam-farrelly/1731515/1326843/select-time"
     }
   ];
 
@@ -146,10 +139,8 @@ const IntroOffer = () => {
   };
 
   const handleFinalBooking = () => {
-    const selected = psychologists.find(p => p.id === selectedPsychologist);
-    if (selected) {
-      window.open(`${selected.halaxyUrl}?discount=${discountCode}`, "_blank");
-    }
+    // Use the exact URL with discount parameter already included
+    window.open("https://www.halaxy.com/book/appointment/psychologist/liam-farrelly/1731515/1326843/select-time?discount=Cerenovafree", "_blank");
   };
 
   return (
@@ -233,8 +224,16 @@ const IntroOffer = () => {
                   </h2>
                 </div>
 
-                <div className="bg-card rounded-3xl p-8 shadow-soft-md space-y-6">
-                  <div className="flex items-start gap-3">
+                <div className="bg-card rounded-3xl p-8 shadow-soft-md space-y-6 relative">
+                  <button
+                    onClick={() => setStep(1)}
+                    className="absolute top-4 left-4 flex items-center gap-1 text-muted-foreground hover:text-foreground transition-colors text-sm"
+                  >
+                    <ArrowLeft className="w-4 h-4" />
+                    Back
+                  </button>
+                  
+                  <div className="flex items-start gap-3 pt-8">
                     <Checkbox
                       id="eligibility"
                       checked={isEligible}
@@ -273,8 +272,16 @@ const IntroOffer = () => {
                   </h2>
                 </div>
 
-                <div className="bg-card rounded-3xl p-8 shadow-soft-md space-y-6">
-                  <div>
+                <div className="bg-card rounded-3xl p-8 shadow-soft-md space-y-6 relative">
+                  <button
+                    onClick={() => setStep(2)}
+                    className="absolute top-4 left-4 flex items-center gap-1 text-muted-foreground hover:text-foreground transition-colors text-sm"
+                  >
+                    <ArrowLeft className="w-4 h-4" />
+                    Back
+                  </button>
+                  
+                  <div className="pt-8">
                     <label
                       htmlFor="email"
                       className="block text-sm font-medium text-foreground mb-2"
@@ -332,7 +339,15 @@ const IntroOffer = () => {
                   </div>
                 </div>
 
-                <div className="bg-card rounded-3xl p-8 shadow-soft-md space-y-6">
+                <div className="bg-card rounded-3xl p-8 shadow-soft-md space-y-6 relative">
+                  <button
+                    onClick={() => setStep(3)}
+                    className="absolute top-4 left-4 flex items-center gap-1 text-muted-foreground hover:text-foreground transition-colors text-sm"
+                  >
+                    <ArrowLeft className="w-4 h-4" />
+                    Back
+                  </button>
+                  
                   {isLoadingDiscount ? (
                     <div className="text-center py-4">
                       <Loader2 className="w-6 h-6 animate-spin mx-auto text-primary" />
@@ -360,6 +375,14 @@ const IntroOffer = () => {
             {/* Step 5: Psychologist Selection */}
             {step === 5 && (
               <div className="space-y-8 animate-fade-in">
+                <button
+                  onClick={() => setStep(4)}
+                  className="flex items-center gap-1 text-muted-foreground hover:text-foreground transition-colors text-sm"
+                >
+                  <ArrowLeft className="w-4 h-4" />
+                  Back
+                </button>
+                
                 <div className="text-center space-y-4">
                   <h2 className="text-3xl font-bold text-foreground">
                     Choose the psychologist who feels like the best fit
@@ -414,6 +437,14 @@ const IntroOffer = () => {
             {/* Step 6: Bridge to Booking */}
             {step === 6 && (
               <div className="space-y-8 animate-fade-in">
+                <button
+                  onClick={() => setStep(5)}
+                  className="flex items-center gap-1 text-muted-foreground hover:text-foreground transition-colors text-sm"
+                >
+                  <ArrowLeft className="w-4 h-4" />
+                  Back
+                </button>
+                
                 <div className="text-center space-y-4">
                   <h2 className="text-3xl font-bold text-foreground">
                     Almost there - next you'll choose a time
