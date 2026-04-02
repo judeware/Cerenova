@@ -471,6 +471,12 @@ const IntroOffer = () => {
                         Apply your discount code: <span className="font-mono font-bold text-primary">{discountCode}</span>
                       </li>
                     </ul>
+                    
+                    <div className="bg-sage-light/30 rounded-xl p-4 mt-4">
+                      <p className="text-sm text-foreground">
+                        <strong>Important:</strong> Select '50-minute session', then available session times will appear. Please keep your discount code handy.
+                      </p>
+                    </div>
                   </div>
 
                   <Button
