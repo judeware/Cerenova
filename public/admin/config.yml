@@ -1,0 +1,63 @@
+backend:
+  name: git-gateway
+  branch: main
+
+media_folder: public/images/uploads
+public_folder: /images/uploads
+
+collections:
+  - name: practitioners
+    label: Practitioners
+    folder: src/content/practitioners
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: "Name", name: "name", widget: "string", required: true }
+      - { label: "Title", name: "title", widget: "string", required: true }
+      - { label: "Bio", name: "bio", widget: "markdown", required: true }
+      - { label: "Specialties", name: "specialties", widget: "list", required: true }
+      - { label: "Photo", name: "photo", widget: "image", required: false }
+      - { label: "Medicare/Fee Information", name: "medicare_info", widget: "string", required: true }
+      - { label: "Book Appointment Link", name: "book_link", widget: "string", required: true }
+
+  - name: pages
+    label: Pages
+    files:
+      - label: "Intro Offer Page"
+        name: intro_offer
+        file: src/content/pages/intro-offer.json
+        fields:
+          - { label: "Page Title", name: "page_title", widget: "string" }
+          - { label: "Hero Section", name: "hero", widget: "object", fields: [
+              { label: "Badge Text", name: "badge", widget: "string" },
+              { label: "Headline", name: "headline", widget: "string" },
+              { label: "Subheadline", name: "subheadline", widget: "text" },
+              { label: "CTA Text", name: "cta_text", widget: "string" }
+            ]}
+          - { label: "Eligibility Text", name: "eligibility_text", widget: "string" }
+          - { label: "Eligibility Helper", name: "eligibility_helper", widget: "string" }
+          - { label: "Email Capture", name: "email_capture", widget: "object", fields: [
+              { label: "Heading", name: "heading", widget: "string" },
+              { label: "Button Text", name: "button_text", widget: "string" }
+            ]}
+          - { label: "Offer Section", name: "offer", widget: "object", fields: [
+              { label: "Heading", name: "heading", widget: "string" },
+              { label: "Value Text", name: "value_text", widget: "string" },
+              { label: "Subtext", name: "subtext", widget: "text" },
+              { label: "Button Text", name: "button_text", widget: "string" }
+            ]}
+          - { label: "Psychologist Selection", name: "psychologist_selection", widget: "object", fields: [
+              { label: "Heading", name: "heading", widget: "string" },
+              { label: "Button Text", name: "button_text", widget: "string" }
+            ]}
+          - { label: "Booking Bridge", name: "booking_bridge", widget: "object", fields: [
+              { label: "Heading", name: "heading", widget: "string" },
+              { label: "Subheading", name: "subheading", widget: "string" },
+              { label: "Instructions Title", name: "instructions_title", widget: "string" },
+              { label: "Step 1", name: "step1", widget: "string" },
+              { label: "Step 2", name: "step2", widget: "string" },
+              { label: "Step 3", name: "step3", widget: "string" },
+              { label: "Important Note", name: "important_note", widget: "text" },
+              { label: "Button Text", name: "button_text", widget: "string" },
+              { label: "Footer Note", name: "footer_note", widget: "string" }
+            ]}

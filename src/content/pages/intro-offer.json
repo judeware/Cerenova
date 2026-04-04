@@ -1,0 +1,36 @@
+{
+  "page_title": "Introductory Offer - Cerenova",
+  "hero": {
+    "badge": "AUSTRALIAN ONLINE PSYCHOLOGY",
+    "headline": "Feeling like something's not quite right?",
+    "subheadline": "Connect with experienced, registered psychologists from the comfort of your home. Check your eligibility for our introductory first-session offer in under a minute.",
+    "cta_text": "Check My Eligibility"
+  },
+  "eligibility_text": "I have a valid Mental Health Care Plan from my GP",
+  "eligibility_helper": "This allows Medicare rebates for psychology sessions",
+  "email_capture": {
+    "heading": "Where should we send your offer details?",
+    "button_text": "Show My Offer"
+  },
+  "offer": {
+    "heading": "You're eligible for our introductory offer",
+    "value_text": "Your first session is fully covered after rebate",
+    "subtext": "Secure your appointment with a $98.95 upfront payment. After your session, the full amount is rebated.",
+    "button_text": "View Available Psychologists and Times"
+  },
+  "psychologist_selection": {
+    "heading": "Choose the psychologist who feels like the best fit",
+    "button_text": "View Times"
+  },
+  "booking_bridge": {
+    "heading": "Almost there - next you'll choose a time",
+    "subheading": "You'll be redirected to our secure booking platform",
+    "instructions_title": "On the next page, you'll:",
+    "step1": "View available appointments for your chosen psychologist",
+    "step2": "Enter your details to secure your booking",
+    "step3": "Apply your discount code:",
+    "important_note": "Select '50-minute session', then available session times will appear. Please keep your discount code handy.",
+    "button_text": "Continue to Secure Booking",
+    "footer_note": "You'll be redirected to Halaxy, our secure booking platform"
+  }
+}
