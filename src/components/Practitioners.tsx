@@ -1,20 +1,9 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { loadPractitioners } from "@/lib/practitioners";
 
-const practitioners = [
-  {
-    name: "Sean Guy",
-    title: "Psychologist",
-    specialties: ["Anxiety", "Depression", "Trauma"],
-    bookingUrl: "https://www.halaxy.com/profile/mr-sean-guy/psychologist/1754171",
-  },
-  {
-    name: "Liam Farrelly",
-    title: "Psychologist",
-    specialties: ["Couples Therapy", "Stress", "Life Transitions"],
-    bookingUrl: "https://www.halaxy.com/book/psychologist/liam-farrelly/1731515/1326843",
-  },
-];
+// Load practitioners from markdown files
+const practitioners = loadPractitioners();
 
 const Practitioners = () => {
   return (
@@ -77,7 +66,7 @@ const Practitioners = () => {
 
               {/* Book Button */}
               <a 
-                href={practitioner.bookingUrl}
+                href={practitioner.book_link}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="block w-full"

@@ -9,6 +9,8 @@ import { ArrowRight, Check, Loader2, Clock, Calendar, User, ArrowLeft } from "lu
 import { toast } from "@/hooks/use-toast";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import introOfferContent from "@/content/pages/intro-offer.json";
+import { loadPractitioners } from "@/lib/practitioners";
 
 const IntroOffer = () => {
   const [searchParams] = useSearchParams();
@@ -21,16 +23,8 @@ const IntroOffer = () => {
   const [isLoadingDiscount, setIsLoadingDiscount] = useState(false);
   const [selectedPsychologist, setSelectedPsychologist] = useState<string | null>(null);
 
-  // Psychologist data
-  const psychologists = [
-    {
-      id: "liam-farrelly",
-      name: "Liam Farrelly", 
-      title: "Psychologist",
-      tags: ["Anxiety", "Depression", "Trauma", "ADHD"],
-      halaxyUrl: "https://www.halaxy.com/book/appointment/psychologist/liam-farrelly/1731515/1326843/select-time"
-    }
-  ];
+  // Load practitioners from markdown files
+  const practitioners = loadPractitioners();
 
   // Capture UTM parameters
   const utmParams = {
@@ -133,14 +127,20 @@ const IntroOffer = () => {
     }
   };
 
-  const handleSelectPsychologist = (psychologistId: string) => {
-    setSelectedPsychologist(psychologistId);
+  const handleSelectPsychologist = (practitionerId: string) => {
+    setSelectedPsychologist(practitionerId);
     setStep(6);
   };
 
   const handleFinalBooking = () => {
-    // Use the exact URL with discount parameter already included
-    window.open("https://www.halaxy.com/book/appointment/psychologist/liam-farrelly/1731515/1326843/select-time?discount=Cerenovafree", "_blank");
+    // Find the selected practitioner
+    const selectedPractitioner = practitioners.find(p => p.id === selectedPsychologist);
+    if (selectedPractitioner) {
+      // Add discount parameter to the booking URL
+      const bookingUrl = new URL(selectedPractitioner.book_link);
+      bookingUrl.searchParams.set('discount', 'Cerenovafree');
+      window.open(bookingUrl.toString(), '_blank');
+    }
   };
 
   return (
@@ -184,14 +184,13 @@ const IntroOffer = () => {
               <div className="text-center space-y-8 animate-fade-in">
                 <div className="space-y-6">
                   <p className="text-sage-dark font-medium tracking-widest uppercase text-xs">
-                    AUSTRALIAN ONLINE PSYCHOLOGY
+                    {introOfferContent.hero.badge}
                   </p>
                   <h1 className="text-4xl md:text-5xl font-bold text-foreground leading-tight">
-                    Feeling like something's not quite right?
+                    {introOfferContent.hero.headline}
                   </h1>
                   <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-                    Connect with experienced, registered psychologists from the comfort of your home. 
-                    Check your eligibility for our introductory first-session offer in under a minute.
+                    {introOfferContent.hero.subheadline}
                   </p>
                 </div>
 
@@ -202,7 +201,7 @@ const IntroOffer = () => {
                     onClick={handleStartClick}
                     className="gap-2 text-lg px-8 py-6"
                   >
-                    Check My Eligibility
+                    {introOfferContent.hero.cta_text}
                     <ArrowRight className="w-5 h-5" />
                   </Button>
                   <p className="text-sm text-muted-foreground mt-3">
@@ -244,9 +243,9 @@ const IntroOffer = () => {
                       htmlFor="eligibility"
                       className="text-foreground cursor-pointer leading-relaxed"
                     >
-                      I have a valid Mental Health Care Plan from my GP
+                      {introOfferContent.eligibility_text}
                       <span className="block text-sm text-muted-foreground mt-1">
-                        This allows Medicare rebates for psychology sessions
+                        {introOfferContent.eligibility_helper}
                       </span>
                     </label>
                   </div>
@@ -268,7 +267,7 @@ const IntroOffer = () => {
               <div className="space-y-8 animate-fade-in">
                 <div className="text-center space-y-4">
                   <h2 className="text-3xl font-bold text-foreground">
-                    Where should we send your offer details?
+                    {introOfferContent.email_capture.heading}
                   </h2>
                 </div>
 
@@ -313,7 +312,7 @@ const IntroOffer = () => {
                       </>
                     ) : (
                       <>
-                        Show My Offer
+                        {introOfferContent.email_capture.button_text}
                         <ArrowRight className="w-4 h-4" />
                       </>
                     )}
@@ -327,14 +326,14 @@ const IntroOffer = () => {
               <div className="space-y-8 animate-fade-in">
                 <div className="text-center space-y-4">
                   <h2 className="text-3xl font-bold text-foreground">
-                    You're eligible for our introductory offer
+                    {introOfferContent.offer.heading}
                   </h2>
                   <div className="space-y-2">
                     <p className="text-4xl font-bold text-primary">
-                      Your first session is fully covered after rebate
+                      {introOfferContent.offer.value_text}
                     </p>
                     <p className="text-lg text-muted-foreground">
-                      Secure your appointment with a $98.95 upfront payment. After your session, the full amount is rebated.
+                      {introOfferContent.offer.subtext}
                     </p>
                   </div>
                 </div>
@@ -365,7 +364,7 @@ const IntroOffer = () => {
                     onClick={() => setStep(5)}
                     className="w-full gap-2"
                   >
-                    View Available Psychologists and Times
+                    {introOfferContent.offer.button_text}
                     <ArrowRight className="w-4 h-4" />
                   </Button>
                 </div>
@@ -385,16 +384,16 @@ const IntroOffer = () => {
                 
                 <div className="text-center space-y-4">
                   <h2 className="text-3xl font-bold text-foreground">
-                    Choose the psychologist who feels like the best fit
+                    {introOfferContent.psychologist_selection.heading}
                   </h2>
                 </div>
 
                 <div className="space-y-4">
-                  {psychologists.map((psychologist) => (
+                  {practitioners.map((practitioner) => (
                     <Card 
-                      key={psychologist.id}
+                      key={practitioner.id}
                       className="p-6 hover:shadow-soft-lg transition-all cursor-pointer"
-                      onClick={() => handleSelectPsychologist(psychologist.id)}
+                      onClick={() => handleSelectPsychologist(practitioner.id)}
                     >
                       <CardContent className="p-0 space-y-4">
                         <div className="flex items-start justify-between">
@@ -405,10 +404,10 @@ const IntroOffer = () => {
                               </div>
                               <div>
                                 <h3 className="text-lg font-semibold text-foreground">
-                                  {psychologist.name}
+                                  {practitioner.name}
                                 </h3>
                                 <p className="text-sm text-muted-foreground">
-                                  {psychologist.title}
+                                  {practitioner.title}
                                 </p>
                               </div>
                             </div>
@@ -416,15 +415,15 @@ const IntroOffer = () => {
                         </div>
                         
                         <div className="flex flex-wrap gap-2">
-                          {psychologist.tags.map((tag) => (
-                            <Badge key={tag} variant="secondary" className="text-xs">
-                              {tag}
+                          {practitioner.specialties.map((specialty) => (
+                            <Badge key={specialty} variant="secondary" className="text-xs">
+                              {specialty}
                             </Badge>
                           ))}
                         </div>
 
                         <Button variant="cta" className="w-full gap-2">
-                          View Times
+                          {introOfferContent.psychologist_selection.button_text}
                           <ArrowRight className="w-4 h-4" />
                         </Button>
                       </CardContent>
@@ -447,34 +446,34 @@ const IntroOffer = () => {
                 
                 <div className="text-center space-y-4">
                   <h2 className="text-3xl font-bold text-foreground">
-                    Almost there - next you'll choose a time
+                    {introOfferContent.booking_bridge.heading}
                   </h2>
                   <p className="text-lg text-muted-foreground">
-                    You'll be redirected to our secure booking platform
+                    {introOfferContent.booking_bridge.subheading}
                   </p>
                 </div>
 
                 <div className="bg-card rounded-3xl p-8 shadow-soft-md space-y-6">
                   <div className="space-y-4">
-                    <h3 className="font-semibold text-foreground">On the next page, you'll:</h3>
+                    <h3 className="font-semibold text-foreground">{introOfferContent.booking_bridge.instructions_title}</h3>
                     <ul className="space-y-3 text-muted-foreground">
                       <li className="flex gap-3">
                         <span className="text-primary font-bold">1.</span>
-                        View available appointments for your chosen psychologist
+                        {introOfferContent.booking_bridge.step1}
                       </li>
                       <li className="flex gap-3">
                         <span className="text-primary font-bold">2.</span>
-                        Enter your details to secure your booking
+                        {introOfferContent.booking_bridge.step2}
                       </li>
                       <li className="flex gap-3">
                         <span className="text-primary font-bold">3.</span>
-                        Apply your discount code: <span className="font-mono font-bold text-primary">{discountCode}</span>
+                        {introOfferContent.booking_bridge.step3} <span className="font-mono font-bold text-primary">{discountCode}</span>
                       </li>
                     </ul>
                     
                     <div className="bg-sage-light/30 rounded-xl p-4 mt-4">
                       <p className="text-sm text-foreground">
-                        <strong>Important:</strong> Select '50-minute session', then available session times will appear. Please keep your discount code handy.
+                        <strong>Important:</strong> {introOfferContent.booking_bridge.important_note}
                       </p>
                     </div>
                   </div>
@@ -485,12 +484,12 @@ const IntroOffer = () => {
                     onClick={handleFinalBooking}
                     className="w-full gap-2"
                   >
-                    Continue to Secure Booking
+                    {introOfferContent.booking_bridge.button_text}
                     <ArrowRight className="w-4 h-4" />
                   </Button>
 
                   <p className="text-xs text-center text-muted-foreground">
-                    You'll be redirected to Halaxy, our secure booking platform
+                    {introOfferContent.booking_bridge.footer_note}
                   </p>
                 </div>
               </div>
