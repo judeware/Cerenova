@@ -22,9 +22,18 @@ const IntroOffer = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isLoadingDiscount, setIsLoadingDiscount] = useState(false);
   const [selectedPsychologist, setSelectedPsychologist] = useState<string | null>(null);
+  const [practitioners, setPractitioners] = useState<any[]>([]);
 
   // Load practitioners from markdown files
-  const practitioners = loadPractitioners();
+  useEffect(() => {
+    const loadedPractitioners = loadPractitioners();
+    console.log("Practitioners loaded:", loadedPractitioners);
+    console.log("Number of practitioners:", loadedPractitioners.length);
+    if (loadedPractitioners.length > 0) {
+      console.log("First practitioner:", loadedPractitioners[0]);
+    }
+    setPractitioners(loadedPractitioners);
+  }, []);
 
   // Capture UTM parameters
   const utmParams = {

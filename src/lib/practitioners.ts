@@ -15,14 +15,16 @@ export interface Practitioner {
 // Import all practitioner markdown files
 const practitionerModules = import.meta.glob('/src/content/practitioners/*.md', { 
   eager: true,
-  as: 'raw'
+  query: '?raw'
 });
 
 function parseFrontMatter(content: string): { data: any; content: string } {
-  const frontMatterRegex = /^---\s*\n([\s\S]*?)\n---\s*\n([\s\S]*)$/;
+  // More flexible regex that handles different line endings and whitespace
+  const frontMatterRegex = /^---\s*[\r\n]+([\s\S]*?)[\r\n]+---\s*[\r\n]*([\s\S]*)$/;
   const match = content.match(frontMatterRegex);
   
   if (!match) {
+    console.error('Frontmatter regex did not match. Content start:', content.substring(0, 50));
     return { data: {}, content };
   }
 
@@ -68,9 +70,28 @@ function parseFrontMatter(content: string): { data: any; content: string } {
 export function loadPractitioners(): Practitioner[] {
   const practitioners: Practitioner[] = [];
   
+  console.log('practitionerModules:', practitionerModules);
+  console.log('Keys:', Object.keys(practitionerModules));
+  
+  if (Object.keys(practitionerModules).length === 0) {
+    console.error('No modules found! Trying different patterns...');
+    // Log what Vite can see
+    console.log('import.meta.url:', import.meta.url);
+  }
+  
   Object.entries(practitionerModules).forEach(([path, content]) => {
+    console.log('Processing path:', path);
+    // Extract the string from the module object
+    const rawContent = typeof content === 'object' && content !== null 
+      ? (content as any).default || String(content)
+      : String(content);
+    
+    console.log('Raw content (first 100 chars):', rawContent.substring(0, 100));
+    
     const filename = path.split('/').pop()?.replace('.md', '') || '';
-    const { data } = parseFrontMatter(content as string);
+    const { data } = parseFrontMatter(rawContent);
+    
+    console.log('Parsed data:', data);
     
     if (data.name) {
       practitioners.push({
