@@ -2,10 +2,12 @@
 name: Liam Farrelly
 title: Psychologist
 bio: >-
-  
-  For many years, Liam has worked alongside police, paramedics, military, and emergency services workers — people who carry enormous responsibility and are expected to hold it together no matter what. That experience shapes everything about how he works: practical, grounded, and focused on what actually helps in the real world.
+  Liam has worked alongside police, paramedics, military, and emergency services
+  workers — people who carry enormous responsibility and are expected to hold it
+  together no matter what. That experience shapes everything about how he works:
+  practical, grounded, and focused on what actually helps in the real world.
 
-  But you don't need that kind of job. Many of Liam's clients are simply dealing with the quiet weight of everyday life — work pressure, relationship strain, or a growing feeling that something isn't right. If you're functioning on the outside but struggling on the inside, you're in the right place.
+  But you don't need that kind of job. Many of Liam's clients are simply dealing with the quiet weight of everyday life — work pressure, relationship strain, or a growing feeling that something isn't right. If you're functioning on the outside but struggling on the inside, you're in the right place. 
 
 
   How Liam works
