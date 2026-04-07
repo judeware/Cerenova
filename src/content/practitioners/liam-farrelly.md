@@ -21,14 +21,14 @@ bio: >-
 
   Areas of support
 
-  Anxiety · Trauma & PTSD · Burnout · Depression · Work stress · Relationship strain · First responder wellbeing · Identity & meaning
+  Anxiety · Trauma & PTSD · Burnout · Depression · Work stress · Relationship strain · First responder wellbeing · Identity & meaning.
 specialties:
   - Anxiety
   - Depression
   - Trauma
   - Relationships
 photo: /images/uploads/_ac14244-edit.jpg
-available_days: "Tue, Thu, Sat"
+available_days: Tue, Thu, Sat
 medicare_info: Medicare rebates available with a valid Mental Health Care Plan
 book_link: https://www.halaxy.com/book/appointment/psychologist/liam-farrelly/1731515/1326843/select-time
 ---
