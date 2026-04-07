@@ -4,31 +4,20 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Phone, Mail, Calendar, Tag, X } from "lucide-react";
-
-const practitioners = [
-  {
-    name: "Sean Guy",
-    title: "Psychologist",
-    specialties: ["Anxiety", "Depression", "Trauma"],
-    bio: "Sean brings extensive experience in helping individuals navigate anxiety, depression, and trauma. He uses evidence-based approaches to support clients in their mental health journey.",
-    availability: "Mon, Wed, Fri",
-    bookingUrl: "https://www.halaxy.com/profile/mr-sean-guy/psychologist/1754171",
-  },
-  {
-    name: "Liam Farrelly",
-    title: "Psychologist",
-    specialties: ["Couples Therapy", "Stress", "Life Transitions"],
-    bio: "Liam specialises in relationship dynamics and life changes, helping couples and individuals build stronger connections and navigate major transitions with confidence.",
-    availability: "Tue, Thu, Sat",
-    bookingUrl: "https://www.halaxy.com/book/psychologist/liam-farrelly/1731515/1326843",
-  },
-];
+import { loadPractitioners } from "@/lib/practitioners";
 
 const PractitionersPage = () => {
   const location = useLocation();
   const [showDiscountBanner, setShowDiscountBanner] = useState(false);
+  const [practitioners, setPractitioners] = useState<any[]>([]);
   const discountCode = location.state?.discountCode;
   const fromIntroOffer = location.state?.fromIntroOffer;
+
+  useEffect(() => {
+    // Load practitioners from markdown files
+    const loadedPractitioners = loadPractitioners();
+    setPractitioners(loadedPractitioners);
+  }, []);
 
   useEffect(() => {
     if (fromIntroOffer && discountCode) {
@@ -135,13 +124,13 @@ const PractitionersPage = () => {
                     {/* Availability */}
                     <div className="flex items-center justify-center sm:justify-start gap-2 text-sm text-sage-dark mb-5">
                       <Calendar className="w-4 h-4" />
-                      <span>Available: {practitioner.availability}</span>
+                      <span>Available: {practitioner.available_days}</span>
                     </div>
 
                     {/* Actions */}
                     <div className="flex flex-col sm:flex-row gap-3">
                       <a 
-                        href={practitioner.bookingUrl}
+                        href={practitioner.book_link}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="flex-1"

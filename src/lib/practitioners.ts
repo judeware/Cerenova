@@ -8,6 +8,7 @@ export interface Practitioner {
   bio: string;
   specialties: string[];
   photo: string;
+  available_days: string;
   medicare_info: string;
   book_link: string;
 }
@@ -70,28 +71,14 @@ function parseFrontMatter(content: string): { data: any; content: string } {
 export function loadPractitioners(): Practitioner[] {
   const practitioners: Practitioner[] = [];
   
-  console.log('practitionerModules:', practitionerModules);
-  console.log('Keys:', Object.keys(practitionerModules));
-  
-  if (Object.keys(practitionerModules).length === 0) {
-    console.error('No modules found! Trying different patterns...');
-    // Log what Vite can see
-    console.log('import.meta.url:', import.meta.url);
-  }
-  
   Object.entries(practitionerModules).forEach(([path, content]) => {
-    console.log('Processing path:', path);
     // Extract the string from the module object
     const rawContent = typeof content === 'object' && content !== null 
       ? (content as any).default || String(content)
       : String(content);
     
-    console.log('Raw content (first 100 chars):', rawContent.substring(0, 100));
-    
     const filename = path.split('/').pop()?.replace('.md', '') || '';
     const { data } = parseFrontMatter(rawContent);
-    
-    console.log('Parsed data:', data);
     
     if (data.name) {
       practitioners.push({
@@ -101,6 +88,7 @@ export function loadPractitioners(): Practitioner[] {
         bio: data.bio || '',
         specialties: data.specialties || [],
         photo: data.photo || '',
+        available_days: data.available_days || '',
         medicare_info: data.medicare_info || '',
         book_link: data.book_link || ''
       });

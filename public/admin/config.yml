@@ -17,6 +17,7 @@ collections:
       - { label: "Bio", name: "bio", widget: "markdown", required: true }
       - { label: "Specialties", name: "specialties", widget: "list", required: true }
       - { label: "Photo", name: "photo", widget: "image", required: false }
+      - { label: "Available Days", name: "available_days", widget: "string", required: false }
       - { label: "Medicare/Fee Information", name: "medicare_info", widget: "string", required: true }
       - { label: "Book Appointment Link", name: "book_link", widget: "string", required: true }
 
