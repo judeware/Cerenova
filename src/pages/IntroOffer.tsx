@@ -15,7 +15,7 @@ import { loadPractitioners } from "@/lib/practitioners";
 const IntroOffer = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  const [step, setStep] = useState(1);
+  const [step, setStep] = useState(5);
   const [isEligible, setIsEligible] = useState(false);
   const [email, setEmail] = useState("");
   const [discountCode, setDiscountCode] = useState("");
@@ -27,11 +27,6 @@ const IntroOffer = () => {
   // Load practitioners from markdown files
   useEffect(() => {
     const loadedPractitioners = loadPractitioners();
-    console.log("Practitioners loaded:", loadedPractitioners);
-    console.log("Number of practitioners:", loadedPractitioners.length);
-    if (loadedPractitioners.length > 0) {
-      console.log("First practitioner:", loadedPractitioners[0]);
-    }
     setPractitioners(loadedPractitioners);
   }, []);
 
@@ -406,10 +401,18 @@ const IntroOffer = () => {
                     >
                       <CardContent className="p-0 space-y-4">
                         <div className="flex items-start justify-between">
-                          <div className="space-y-2">
+                          <div className="space-y-2 w-full">
                             <div className="flex items-center gap-3">
-                              <div className="w-12 h-12 bg-sage-light rounded-full flex items-center justify-center">
-                                <User className="w-6 h-6 text-sage-dark" />
+                              <div className="w-12 h-12 bg-sage-light rounded-full overflow-hidden flex items-center justify-center">
+                                {practitioner.photo ? (
+                                  <img 
+                                    src={practitioner.photo} 
+                                    alt={practitioner.name}
+                                    className="w-full h-full object-cover"
+                                  />
+                                ) : (
+                                  <User className="w-6 h-6 text-sage-dark" />
+                                )}
                               </div>
                               <div>
                                 <h3 className="text-lg font-semibold text-foreground">
@@ -422,6 +425,11 @@ const IntroOffer = () => {
                             </div>
                           </div>
                         </div>
+
+                        {/* Bio */}
+                        <p className="text-muted-foreground text-sm line-clamp-3">
+                          {practitioner.bio}
+                        </p>
                         
                         <div className="flex flex-wrap gap-2">
                           {practitioner.specialties.map((specialty) => (

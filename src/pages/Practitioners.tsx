@@ -83,15 +83,23 @@ const PractitionersPage = () => {
                   {/* Avatar */}
                   <div className="flex-shrink-0">
                     <div className="w-24 h-24 sm:w-32 sm:h-32 mx-auto sm:mx-0 rounded-full bg-gradient-to-br from-sage-light to-sage overflow-hidden ring-4 ring-sage-light group-hover:ring-sage transition-colors">
-                      <div className="w-full h-full flex items-center justify-center">
-                        <svg
-                          className="w-14 h-14 sm:w-20 sm:h-20 text-primary/60"
-                          fill="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
-                        </svg>
-                      </div>
+                      {practitioner.photo ? (
+                        <img 
+                          src={practitioner.photo} 
+                          alt={practitioner.name}
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center">
+                          <svg
+                            className="w-14 h-14 sm:w-20 sm:h-20 text-primary/60"
+                            fill="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
+                          </svg>
+                        </div>
+                      )}
                     </div>
                   </div>
 
@@ -117,7 +125,7 @@ const PractitionersPage = () => {
                     </div>
 
                     {/* Bio */}
-                    <p className="text-muted-foreground text-sm leading-relaxed mb-4">
+                    <p className="text-muted-foreground text-sm leading-relaxed mb-4 line-clamp-4">
                       {practitioner.bio}
                     </p>
 

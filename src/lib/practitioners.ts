@@ -46,8 +46,26 @@ function parseFrontMatter(content: string): { data: any; content: string } {
           value = value.slice(1, -1);
         }
         
+        // Handle multiline strings (bio with >- syntax)
+        if (value === '>-' || value === '>' || value === '|-' || value === '|') {
+          // Look for subsequent indented lines
+          const lines = frontMatter.split('\n');
+          const keyIndex = lines.findIndex(l => l.includes(key + ':'));
+          let bioText = '';
+          let i = keyIndex + 1;
+          while (i < lines.length && (lines[i].startsWith('  ') || lines[i].trim() === '')) {
+            if (lines[i].trim() !== '') {
+              bioText += (bioText ? ' ' : '') + lines[i].trim();
+            } else if (bioText) {
+              // Empty line creates a paragraph break
+              bioText += '\n\n';
+            }
+            i++;
+          }
+          data[key] = bioText.trim();
+        }
         // Handle arrays (specialties)
-        if (key === 'specialties') {
+        else if (key === 'specialties') {
           data[key] = [];
           // Look for array items in subsequent lines
           const lines = frontMatter.split('\n');

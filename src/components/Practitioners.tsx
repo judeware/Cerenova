@@ -1,11 +1,16 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { loadPractitioners } from "@/lib/practitioners";
-
-// Load practitioners from markdown files
-const practitioners = loadPractitioners();
+import { useState, useEffect } from "react";
 
 const Practitioners = () => {
+  const [practitioners, setPractitioners] = useState<any[]>([]);
+
+  useEffect(() => {
+    // Load practitioners from markdown files
+    const loadedPractitioners = loadPractitioners();
+    setPractitioners(loadedPractitioners);
+  }, []);
   return (
     <section id="practitioners" className="py-24 bg-background">
       <div className="container mx-auto px-6">
@@ -31,17 +36,25 @@ const Practitioners = () => {
               className="group bg-card rounded-3xl p-6 shadow-soft-sm hover:shadow-soft-lg transition-all duration-500 hover:-translate-y-2 text-center"
               style={{ animationDelay: `${index * 0.1}s` }}
             >
-              {/* Avatar Placeholder */}
+              {/* Avatar */}
               <div className="w-28 h-28 mx-auto mb-5 rounded-full bg-gradient-to-br from-sage-light to-sage overflow-hidden ring-4 ring-sage-light group-hover:ring-sage transition-colors">
-                <div className="w-full h-full flex items-center justify-center">
-                  <svg
-                    className="w-16 h-16 text-primary/60"
-                    fill="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
-                  </svg>
-                </div>
+                {practitioner.photo ? (
+                  <img 
+                    src={practitioner.photo} 
+                    alt={practitioner.name}
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center">
+                    <svg
+                      className="w-16 h-16 text-primary/60"
+                      fill="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
+                    </svg>
+                  </div>
+                )}
               </div>
 
               {/* Info */}
@@ -53,7 +66,7 @@ const Practitioners = () => {
               </p>
 
               {/* Specialties */}
-              <div className="flex flex-wrap justify-center gap-2 mb-6">
+              <div className="flex flex-wrap justify-center gap-2 mb-4">
                 {practitioner.specialties.map((specialty) => (
                   <span
                     key={specialty}
@@ -63,6 +76,11 @@ const Practitioners = () => {
                   </span>
                 ))}
               </div>
+
+              {/* Bio - Show truncated version */}
+              <p className="text-muted-foreground text-sm mb-6 line-clamp-3">
+                {practitioner.bio}
+              </p>
 
               {/* Book Button */}
               <a 
