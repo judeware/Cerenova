@@ -28,7 +28,7 @@ specialties:
   - Trauma
   - Relationships
 photo: /images/uploads/_ac14244-edit.jpg
-available_days: Tue, Thu, Sat
+available_days: Mon, Tue, Sat
 medicare_info: Medicare rebates available with a valid Mental Health Care Plan
 book_link: https://www.halaxy.com/profile/mr-liam-farrelly/psychologist/1731515?clinic=1326843
 ---
