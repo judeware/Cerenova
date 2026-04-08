@@ -21,7 +21,7 @@ bio: >-
 
   Areas of support
 
-  Anxiety · Trauma & PTSD · Burnout · Depression · Work stress · Relationship strain · First responder wellbeing · Identity & meaning.
+  Anxiety · Trauma & PTSD · Burnout · Depression · Work stress · Relationship strain · First responder wellbeing · Identity & meaning
 specialties:
   - Anxiety
   - Depression
