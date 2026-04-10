@@ -15,7 +15,7 @@ import { loadPractitioners } from "@/lib/practitioners";
 const IntroOffer = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  const [step, setStep] = useState(5);
+  const [step, setStep] = useState(1);
   const [isEligible, setIsEligible] = useState(false);
   const [email, setEmail] = useState("");
   const [discountCode, setDiscountCode] = useState("");
