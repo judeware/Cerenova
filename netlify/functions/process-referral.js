@@ -273,8 +273,12 @@ exports.handler = async (event) => {
     }
 
     const dealData = await createDealResponse.json();
+    console.log(`Deal created successfully with ID: ${dealData.id}`);
 
     // Step 3: Create a Note engagement with file attachments
+    console.log('Creating note with file attachments...');
+    console.log(`File IDs - Referral Letter: ${referralLetterData.id}, MHCP: ${mhcpData.id}`);
+    
     const notePayload = {
       properties: {
         hs_timestamp: new Date().toISOString(),
@@ -307,6 +311,8 @@ exports.handler = async (event) => {
       ]
     };
 
+    console.log('Note payload:', JSON.stringify(notePayload, null, 2));
+
     const createNoteResponse = await fetch(
       `https://api.hubapi.com/crm/v3/objects/notes`,
       {
@@ -319,9 +325,66 @@ exports.handler = async (event) => {
       }
     );
 
+    const noteResponseText = await createNoteResponse.text();
+    
     if (!createNoteResponse.ok) {
-      console.error(`Failed to create note: ${await createNoteResponse.text()}`);
-      // Don't fail the whole process if note creation fails
+      console.error(`Failed to create note. Status: ${createNoteResponse.status}`);
+      console.error(`Error response: ${noteResponseText}`);
+      
+      // Try alternative approach using Engagements API v1
+      console.log('Attempting fallback using Engagements API v1...');
+      
+      const engagementPayload = {
+        engagement: {
+          active: true,
+          type: "NOTE",
+          timestamp: Date.now()
+        },
+        associations: {
+          contactIds: [contactId],
+          dealIds: [dealData.id]
+        },
+        attachments: [
+          {
+            id: referralLetterData.id
+          },
+          {
+            id: mhcpData.id
+          }
+        ],
+        metadata: {
+          body: `GP Referral Documents:\n\nReferral Letter: ${files.referralLetter.filename}\nMHCP: ${files.mhcp.filename}\n\nReferral from Dr. ${fields.gpName} for ${fields.patientName}`
+        }
+      };
+      
+      console.log('Engagement v1 payload:', JSON.stringify(engagementPayload, null, 2));
+      
+      const engagementResponse = await fetch(
+        'https://api.hubapi.com/engagements/v1/engagements',
+        {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${accessToken}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(engagementPayload)
+        }
+      );
+      
+      const engagementResponseText = await engagementResponse.text();
+      
+      if (engagementResponse.ok) {
+        console.log('Successfully created engagement with attachments using v1 API');
+        const engagementData = JSON.parse(engagementResponseText);
+        console.log(`Engagement ID: ${engagementData.engagement.id}`);
+      } else {
+        console.error(`Failed to create engagement v1. Status: ${engagementResponse.status}`);
+        console.error(`Error response: ${engagementResponseText}`);
+      }
+    } else {
+      const noteData = JSON.parse(noteResponseText);
+      console.log(`Note created successfully with ID: ${noteData.id}`);
+      console.log('File attachments should now be visible on the deal record');
     }
 
     console.log('GP Referral processed successfully');
