@@ -157,12 +157,18 @@ exports.handler = async (event) => {
     const mhcpData = await uploadToHubSpot(files.mhcp, accessToken);
 
     // Step 1: Create or update contact (patient)
+    console.log('Creating/updating contact for patient:', fields.patientName);
+    
     const contactProperties = {
       email: fields.patientEmail,
       firstname: fields.patientName.split(' ')[0],
       lastname: fields.patientName.split(' ').slice(1).join(' ') || '',
-      mobilephone: fields.patientMobile
+      mobilephone: fields.patientMobile,
+      // Add date of birth as a custom property (requires custom field in HubSpot)
+      date_of_birth: fields.patientDOB
     };
+
+    console.log('Contact properties:', JSON.stringify(contactProperties, null, 2));
 
     // Search for existing contact by email
     const searchResponse = await fetch(
@@ -191,7 +197,9 @@ exports.handler = async (event) => {
     if (searchData.total > 0) {
       // Update existing contact
       contactId = searchData.results[0].id;
-      await fetch(
+      console.log(`Found existing contact with ID: ${contactId}. Updating...`);
+      
+      const updateResponse = await fetch(
         `https://api.hubapi.com/crm/v3/objects/contacts/${contactId}`,
         {
           method: 'PATCH',
@@ -202,8 +210,19 @@ exports.handler = async (event) => {
           body: JSON.stringify({ properties: contactProperties })
         }
       );
+
+      if (!updateResponse.ok) {
+        console.error(`Failed to update contact. Status: ${updateResponse.status}`);
+        const errorText = await updateResponse.text();
+        console.error(`Error response: ${errorText}`);
+        throw new Error(`Failed to update contact: ${errorText}`);
+      }
+      
+      console.log(`Contact ${contactId} updated successfully`);
     } else {
       // Create new contact
+      console.log('No existing contact found. Creating new contact...');
+      
       const createContactResponse = await fetch(
         `https://api.hubapi.com/crm/v3/objects/contacts`,
         {
@@ -217,14 +236,20 @@ exports.handler = async (event) => {
       );
 
       if (!createContactResponse.ok) {
-        throw new Error(`Failed to create contact: ${await createContactResponse.text()}`);
+        console.error(`Failed to create contact. Status: ${createContactResponse.status}`);
+        const errorText = await createContactResponse.text();
+        console.error(`Error response: ${errorText}`);
+        throw new Error(`Failed to create contact: ${errorText}`);
       }
 
       const contactData = await createContactResponse.json();
       contactId = contactData.id;
+      console.log(`Contact created successfully with ID: ${contactId}`);
     }
 
     // Step 2: Create deal in GP Referrals pipeline with specific IDs
+    console.log(`Creating deal for patient ${fields.patientName} and associating with contact ${contactId}`);
+    
     const dealProperties = {
       dealname: `GP Referral - ${fields.patientName}`,
       pipeline: '1620199873',  // GP Referrals pipeline ID
@@ -237,6 +262,8 @@ exports.handler = async (event) => {
       mhcp_url: mhcpData.url,
       description: `Referral from Dr. ${fields.gpName} for ${fields.patientName}`
     };
+
+    console.log('Deal properties:', JSON.stringify(dealProperties, null, 2));
 
     // Create deal with associations included in the payload
     const createDealPayload = {
@@ -269,15 +296,19 @@ exports.handler = async (event) => {
     );
 
     if (!createDealResponse.ok) {
-      throw new Error(`Failed to create deal: ${await createDealResponse.text()}`);
+      console.error(`Failed to create deal. Status: ${createDealResponse.status}`);
+      const errorText = await createDealResponse.text();
+      console.error(`Error response: ${errorText}`);
+      throw new Error(`Failed to create deal: ${errorText}`);
     }
 
     const dealData = await createDealResponse.json();
-    console.log(`Deal created successfully with ID: ${dealData.id}`);
+    console.log(`Deal created successfully with ID: ${dealData.id} and associated with contact ${contactId}`);
 
-    // Step 3: Create a Note engagement with file attachments
-    console.log('Creating note with file attachments...');
+    // Step 3: Create a Note engagement with file attachments linked to both Deal and Contact
+    console.log('Creating note with file attachments linked to both deal and contact...');
     console.log(`File IDs - Referral Letter: ${referralLetterData.id}, MHCP: ${mhcpData.id}`);
+    console.log(`Associating with Deal ID: ${dealData.id} and Contact ID: ${contactId}`);
     
     const notePayload = {
       properties: {
@@ -384,10 +415,12 @@ exports.handler = async (event) => {
     } else {
       const noteData = JSON.parse(noteResponseText);
       console.log(`Note created successfully with ID: ${noteData.id}`);
-      console.log('File attachments should now be visible on the deal record');
+      console.log('File attachments should now be visible on both the deal and contact records');
     }
 
     console.log('GP Referral processed successfully');
+    console.log(`Summary: Contact ID: ${contactId}, Deal ID: ${dealData.id}`);
+    console.log(`Files attached: ${files.referralLetter.filename}, ${files.mhcp.filename}`);
 
     return {
       statusCode: 200,
@@ -400,11 +433,14 @@ exports.handler = async (event) => {
     };
   } catch (error) {
     console.error('Error processing referral:', error);
+    console.error('Stack trace:', error.stack);
+    
     return {
       statusCode: 500,
       body: JSON.stringify({
         error: 'Failed to process referral',
-        message: error.message
+        message: error.message,
+        details: process.env.NODE_ENV === 'development' ? error.stack : undefined
       })
     };
   }
